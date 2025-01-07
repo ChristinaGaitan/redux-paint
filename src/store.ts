@@ -1,6 +1,7 @@
 import { rootReducer } from "./rootReducer"
-import { devToolsEnhancer } from "redux-devtools-extension"
+import { composeWithDevTools } from "redux-devtools-extension"
 // TODO: replace this import
-import { createStore } from "redux"
+import { applyMiddleware, createStore } from "redux"
+import logger from "redux-logger";
 
-export const store = createStore(rootReducer, devToolsEnhancer({}));
+export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(logger)));
