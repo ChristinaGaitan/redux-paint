@@ -26,6 +26,6 @@ export const updateStroke = (x: number, y: number) => {
   return { type: UPDATE_STROKE, payload: x, y };
 };
 
-export const endStroke = (x: number, y: number) => {
+export const endStroke = () => {
   return { type: END_STROKE };
 };
