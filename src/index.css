@@ -47,3 +47,10 @@ canvas {
   transform: translate3d(-50%, 0, 0);
   z-index: 10;
 }
+
+.edit {
+  position: fixed;
+  bottom: 40px;
+  left: 20%;
+  z-index: 10;
+}
