@@ -6,6 +6,8 @@ const initialState: RootState = {
   strokes: [],
 };
 
+export const currentStrokeSelector = (state: RootState) => state.currentStroke;
+
 export const rootReducer = (
   state: RootState = initialState,
   action: Action,

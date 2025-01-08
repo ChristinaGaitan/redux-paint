@@ -1,9 +1,9 @@
 import { useEffect, useRef, MouseEvent } from "react";
-import { clearCanvas, setCanvasSize } from "./utils/canvasUtils";
+import { clearCanvas, drawStroke, setCanvasSize } from "./utils/canvasUtils";
 import { useSelector } from "react-redux";
-import { RootState } from "./utils/types";
 import { useDispatch } from "react-redux";
 import { beginStroke, endStroke, updateStroke } from "./actions";
+import { currentStrokeSelector } from "./rootReducer";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -11,13 +11,13 @@ const HEIGHT = 768;
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const currentStroke = useSelector(currentStrokeSelector);
+
   const getCanvasWithContext = (canvas = canvasRef.current) => {
     return { canvas, context: canvas?.getContext("2d") };
   };
 
-  const isDrawing = useSelector<RootState>(
-    (state) => !!state.currentStroke.points.length,
-  );
+  const isDrawing = !!currentStroke.points.length;
 
   const dispatch = useDispatch();
 
@@ -36,12 +36,22 @@ function App() {
     clearCanvas(canvas);
   }, []);
 
+  useEffect(() => {
+    const { context } = getCanvasWithContext();
+
+    if (!context) return;
+
+    requestAnimationFrame(() =>
+      drawStroke(context, currentStroke.points, currentStroke.color),
+    );
+  }, [currentStroke]);
+
   const startDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent;
     dispatch(beginStroke(offsetX, offsetY));
   };
 
-  const endDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
+  const draw = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
 
     const { offsetX, offsetY } = nativeEvent;
@@ -49,7 +59,7 @@ function App() {
     dispatch(updateStroke(offsetX, offsetY));
   };
 
-  const draw = () => {
+  const endDrawing = () => {
     if (isDrawing) {
       dispatch(endStroke());
     }
