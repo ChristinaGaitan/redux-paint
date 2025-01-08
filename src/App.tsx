@@ -3,7 +3,11 @@ import { clearCanvas, drawStroke, setCanvasSize } from "./utils/canvasUtils";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { beginStroke, endStroke, updateStroke } from "./actions";
-import { currentStrokeSelector } from "./rootReducer";
+import {
+  currentStrokeSelector,
+  historyIndexSelector,
+  strokesSelector,
+} from "./rootReducer";
 import { ColorPanel } from "./shared/ColorPanel";
 import { EditPanel } from "./shared/EditPanel";
 
@@ -14,6 +18,8 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const currentStroke = useSelector(currentStrokeSelector);
+  const historyIndex = useSelector(historyIndexSelector);
+  const strokes = useSelector(strokesSelector);
 
   const getCanvasWithContext = (canvas = canvasRef.current) => {
     return { canvas, context: canvas?.getContext("2d") };
@@ -47,6 +53,20 @@ function App() {
       drawStroke(context, currentStroke.points, currentStroke.color),
     );
   }, [currentStroke]);
+
+  useEffect(() => {
+    const { canvas, context } = getCanvasWithContext();
+
+    if (!context || !canvas) return;
+
+    requestAnimationFrame(() => {
+      clearCanvas(canvas);
+
+      strokes.slice(0, strokes.length - historyIndex).forEach((stroke) => {
+        drawStroke(context, stroke.points, stroke.color);
+      });
+    });
+  }, [historyIndex, strokes]);
 
   const startDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent;
