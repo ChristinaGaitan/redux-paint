@@ -52,5 +52,5 @@ export const undo = () => {
 };
 
 export const redo = () => {
-  return { type: UNDO };
+  return { type: REDO };
 };
