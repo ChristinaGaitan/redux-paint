@@ -19,11 +19,11 @@ export type Action =
     };
 
 export const beginStroke = (x: number, y: number) => {
-  return { type: BEGIN_STROKE, payload: x, y };
+  return { type: BEGIN_STROKE, payload: { x, y } };
 };
 
 export const updateStroke = (x: number, y: number) => {
-  return { type: UPDATE_STROKE, payload: x, y };
+  return { type: UPDATE_STROKE, payload: { x, y } };
 };
 
 export const endStroke = () => {
