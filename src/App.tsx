@@ -1,5 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, MouseEvent } from "react";
 import { clearCanvas, setCanvasSize } from "./utils/canvasUtils";
+import { useSelector } from "react-redux";
+import { RootState } from "./utils/types";
+import { useDispatch } from "react-redux";
+import { beginStroke, endStroke, updateStroke } from "./actions";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -10,6 +14,12 @@ function App() {
   const getCanvasWithContext = (canvas = canvasRef.current) => {
     return { canvas, context: canvas?.getContext("2d") };
   };
+
+  const isDrawing = useSelector<RootState>(
+    (state) => !!state.currentStroke.points.length,
+  );
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const { canvas, context } = getCanvasWithContext();
@@ -26,6 +36,25 @@ function App() {
     clearCanvas(canvas);
   }, []);
 
+  const startDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
+    const { offsetX, offsetY } = nativeEvent;
+    dispatch(beginStroke(offsetX, offsetY));
+  };
+
+  const endDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+
+    const { offsetX, offsetY } = nativeEvent;
+
+    dispatch(updateStroke(offsetX, offsetY));
+  };
+
+  const draw = () => {
+    if (isDrawing) {
+      dispatch(endStroke());
+    }
+  };
+
   return (
     <div className="window">
       <div className="title-bar">
@@ -34,7 +63,13 @@ function App() {
           <button arial-label="Close" />
         </div>
       </div>
-      <canvas ref={canvasRef} />
+      <canvas
+        onMouseDown={startDrawing}
+        onMouseUp={endDrawing}
+        onMouseOut={endDrawing}
+        onMouseMove={draw}
+        ref={canvasRef}
+      />
     </div>
   );
 }
