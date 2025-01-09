@@ -14,6 +14,7 @@ import { useCanvas } from "./CanvasContext";
 import { FilePanel } from "./shared/FilePanel";
 import { endStroke } from "./modules/sharedActions";
 import { historyIndexSelector } from "./modules/historyIndex/slice";
+import { ModalLayer } from "./ModalLayer";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -105,6 +106,7 @@ function App() {
       <EditPanel />
       <ColorPanel />
       <FilePanel />
+      <ModalLayer />
       <canvas
         onMouseDown={startDrawing}
         onMouseUp={endDrawing}
