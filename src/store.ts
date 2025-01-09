@@ -1,9 +1,10 @@
 import logger from "redux-logger";
 import { currentStroke } from "./modules/currentStroke/slice";
 import strokes from "./modules/strokes/slice";
-import { configureStore } from "@reduxjs/toolkit";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import historyIndex from "./modules/historyIndex/slice";
 import { modalVisible } from "./modules/modals/slice";
+import { RootState } from "./utils/types";
 
 export const store = configureStore({
   reducer: {
@@ -14,3 +15,5 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
+
+export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
