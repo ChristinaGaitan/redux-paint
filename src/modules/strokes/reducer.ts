@@ -1,15 +1,15 @@
 import { RootState, Stroke } from "../../utils/types";
-import { Action, END_STROKE } from "./actions";
+import { endStroke, SharedAction } from "../sharedActions";
 
 export const strokesSelector = (state: RootState) => state.strokes;
 export const strokesLengthSelector = (state: RootState) => state.strokes.length;
 
 export const reducer = (
   state: RootState["strokes"] = [],
-  action: Action,
+  action: SharedAction,
 ): Stroke[] => {
   switch (action.type) {
-    case END_STROKE: {
+    case endStroke.toString(): {
       const { historyIndex, stroke } = action.payload;
 
       if (!stroke.points.length) return state;
