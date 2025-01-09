@@ -50,6 +50,9 @@
     ]
   },
   "devDependencies": {
+    "@types/cors": "2.8.6",
+    "@types/express": "4.17.6",
+    "@types/lowdb": "1.0.9",
     "@typescript-eslint/parser": "^5.0.1",
     "concurrently": "5.1.0",
     "cors": "2.8.5",
