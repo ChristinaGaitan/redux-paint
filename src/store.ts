@@ -17,3 +17,4 @@ export const store = configureStore({
 });
 
 export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>;
+export type AppDispatch = typeof store.dispatch;
