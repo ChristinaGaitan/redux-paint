@@ -5,6 +5,7 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import historyIndex from "./modules/historyIndex/slice";
 import { modalVisible } from "./modules/modals/slice";
 import { RootState } from "./utils/types";
+import { projectList } from "./modules/projectsList/slice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     strokes,
     currentStroke,
     modalVisible,
+    projectList,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
