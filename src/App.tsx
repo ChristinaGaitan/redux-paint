@@ -1,4 +1,4 @@
-import { useEffect, MouseEvent } from "react";
+import { useEffect, MouseEvent, useCallback } from "react";
 import { clearCanvas, drawStroke, setCanvasSize } from "./utils/canvasUtils";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -7,13 +7,10 @@ import { EditPanel } from "./shared/EditPanel";
 import { currentStrokeSelector } from "./modules/currentStroke/reducer";
 import { historyIndexSelector } from "./modules/historyIndex/reducer";
 import { strokesSelector } from "./modules/strokes/reducer";
-import {
-  beginStroke,
-  endStroke,
-  updateStroke,
-} from "./modules/currentStroke/actions";
+import { beginStroke, updateStroke } from "./modules/currentStroke/actions";
 import { useCanvas } from "./CanvasContext";
 import { FilePanel } from "./shared/FilePanel";
+import { endStroke } from "./modules/sharedActions";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -25,9 +22,12 @@ function App() {
   const historyIndex = useSelector(historyIndexSelector);
   const strokes = useSelector(strokesSelector);
 
-  const getCanvasWithContext = (canvas = canvasRef.current) => {
-    return { canvas, context: canvas?.getContext("2d") };
-  };
+  const getCanvasWithContext = useCallback(
+    (canvas = canvasRef.current) => {
+      return { canvas, context: canvas?.getContext("2d") };
+    },
+    [canvasRef],
+  );
 
   const isDrawing = !!currentStroke.points.length;
 
@@ -56,7 +56,7 @@ function App() {
     requestAnimationFrame(() =>
       drawStroke(context, currentStroke.points, currentStroke.color),
     );
-  }, [currentStroke]);
+  }, [currentStroke, getCanvasWithContext]);
 
   useEffect(() => {
     const { canvas, context } = getCanvasWithContext();
@@ -70,11 +70,11 @@ function App() {
         drawStroke(context, stroke.points, stroke.color);
       });
     });
-  }, [historyIndex, strokes]);
+  }, [getCanvasWithContext, historyIndex, strokes]);
 
   const startDrawing = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent;
-    dispatch(beginStroke(offsetX, offsetY));
+    dispatch(beginStroke({ x: offsetX, y: offsetY }));
   };
 
   const draw = ({ nativeEvent }: MouseEvent<HTMLCanvasElement>) => {
@@ -82,12 +82,12 @@ function App() {
 
     const { offsetX, offsetY } = nativeEvent;
 
-    dispatch(updateStroke(offsetX, offsetY));
+    dispatch(updateStroke({ x: offsetX, y: offsetY }));
   };
 
   const endDrawing = () => {
     if (isDrawing) {
-      dispatch(endStroke(historyIndex, currentStroke));
+      dispatch(endStroke({ historyIndex, stroke: currentStroke }));
     }
   };
 
