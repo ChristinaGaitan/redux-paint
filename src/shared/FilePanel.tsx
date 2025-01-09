@@ -10,8 +10,7 @@ export const FilePanel = () => {
 
     if (!file) return;
 
-    saveAs(file);
-    // saveAs(file, "drawing.png");
+    saveAs(file, "drawing.png");
   };
 
   return (
