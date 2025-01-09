@@ -50,7 +50,7 @@ function App() {
     context.strokeStyle = "black";
 
     clearCanvas(canvas);
-  }, []);
+  }, [getCanvasWithContext]);
 
   useEffect(() => {
     const { context } = getCanvasWithContext();
