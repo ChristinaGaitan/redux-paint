@@ -5,12 +5,12 @@ import { useDispatch } from "react-redux";
 import { ColorPanel } from "./shared/ColorPanel";
 import { EditPanel } from "./shared/EditPanel";
 import { currentStrokeSelector } from "./modules/currentStroke/reducer";
-import { historyIndexSelector } from "./modules/historyIndex/reducer";
 import { strokesSelector } from "./modules/strokes/reducer";
 import { beginStroke, updateStroke } from "./modules/currentStroke/actions";
 import { useCanvas } from "./CanvasContext";
 import { FilePanel } from "./shared/FilePanel";
 import { endStroke } from "./modules/sharedActions";
+import { historyIndexSelector } from "./modules/historyIndex/slice";
 
 const WIDTH = 1024;
 const HEIGHT = 768;
