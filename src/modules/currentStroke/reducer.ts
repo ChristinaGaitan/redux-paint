@@ -17,7 +17,7 @@ export const currentStrokeSelector = (state: RootState) => state.currentStroke;
 export const reducer = (
   state: RootState["currentStroke"] = initialState,
   action: Action,
-) => {
+): Stroke => {
   switch (action.type) {
     case BEGIN_STROKE: {
       return { ...state, points: [action.payload] };
