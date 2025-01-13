@@ -1,8 +1,27 @@
 import { useDispatch } from "react-redux";
 import { hide } from "./modules/modals/slice";
+import { useSelector } from "react-redux";
+import {
+  getProjectsList,
+  projectListSelector,
+} from "./modules/projectsList/slice";
+import { useEffect } from "react";
+import { AppDispatch } from "./store";
+import { loadProject } from "./modules/strokes/slice";
 
 export const ProjectsModal = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const projectList = useSelector(projectListSelector);
+
+  useEffect(() => {
+    dispatch(getProjectsList());
+  }, [dispatch]);
+
+  const onLoadProject = (projectId: string) => {
+    dispatch(loadProject(projectId));
+    dispatch(hide());
+  };
 
   return (
     <div className="window modal-panel">
@@ -14,7 +33,20 @@ export const ProjectsModal = () => {
           </button>
         </div>
       </div>
-      <div className="projects-container">Projects List</div>
+      <div className="projects-container">
+        {(projectList || []).map((project) => {
+          return (
+            <div
+              key={project.id}
+              onClick={() => onLoadProject(project.id)}
+              className="project-card"
+            >
+              <img src={project.image} alt="thumbnail" />
+              <div>{project.name}</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

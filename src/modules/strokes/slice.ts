@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../utils/types";
 import { endStroke } from "../sharedActions";
-import { newProject } from "./api";
+import { getProject, newProject } from "./api";
 
 export const strokesSelector = (state: RootState) => state.strokes;
 export const strokesLengthSelector = (state: RootState) => state.strokes.length;
@@ -21,6 +21,9 @@ const strokes = createSlice({
       } else {
         state.splice(-historyIndex, historyIndex, stroke);
       }
+    });
+    builder.addCase(loadProject.fulfilled, (state, action) => {
+      return action.payload;
     });
   },
 });
@@ -42,6 +45,18 @@ export const saveProject = createAsyncThunk(
         thumbnail,
       );
       console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+);
+
+export const loadProject = createAsyncThunk(
+  "LOAD_PROJECT",
+  async (projectId: string) => {
+    try {
+      const { project } = await getProject(projectId);
+      return project.strokes;
     } catch (error) {
       console.log(error);
     }
